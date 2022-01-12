@@ -1,5 +1,5 @@
 extends KinematicBody2D
-var HP =3  
+onready var PlayerHP =3  
 var score = 0
 const PlayerSpeed = 3
 var vel = Vector2()
@@ -17,6 +17,10 @@ func _process(delta):
 func _physics_process(delta):
 
 	vel.y+=grav
+	if PlayerHP<1:
+		print("GAMEOVER")
+		queue_free()
+	
  
 	if Input.is_action_pressed("ui_left"):
 		
@@ -59,6 +63,7 @@ func _physics_process(delta):
 	#vel=vel.normalized()* PlayerSpeed
 	vel =move_and_slide(vel,Vector2.UP)
 	#clamp(PlayerSpeed,1 ,PlayerSpeed)
+	PlayerHit()
 
 
 func _on_Heart_Item_PickUp():
@@ -70,5 +75,16 @@ func _on_Heart_body_entered(_body):
 	var collision_layer= 1
 	var heartImage = get_canvas_item()
 	queue_free()
+	
+func PlayerHit():
+	for i in get_slide_count():
+		var collision = get_slide_collision(i)
+		#print("Collided with: ", collision.collider.name)
+		#print (collision.collider_shape_index)
+		
+		if collision.collider is KinematicBody2D:
+			print ("Hit the player")
+			PlayerHP= PlayerHP-1
+			print (PlayerHP)
 	
 
